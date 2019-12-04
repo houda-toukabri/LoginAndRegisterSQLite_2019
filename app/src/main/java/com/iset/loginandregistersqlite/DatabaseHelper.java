@@ -11,12 +11,12 @@ import androidx.annotation.Nullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     DatabaseHelper(@Nullable Context context) {
-        super(context, "Login.db" , null, 1);
+        super(context, "LoginActivity.db", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("Create table user(email text primary key, password text)");
+        db.execSQL("create table user(email text primary key, password text)");
     }
 
     @Override
@@ -24,24 +24,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists user");
     }
 
-    //Insertion dans la base de données
-    boolean insert(String email, String password){
+    // Insertion dans la base de données
+    boolean insert(String email, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("email", email);
         contentValues.put("password", password);
-        long ins = db.insert("user",null,contentValues);
+        long ins = db.insert("user", null, contentValues);
         return ins != -1;
-        /*Equivalent à
+        /* Equivalent à
         if(ins == -1)
             return false;
         return true;
         */
     }
-    //Tester l'existence du mail
-    boolean checkMail(String email){
+
+    // Tester l'existence du mail
+    boolean checkMail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = db.rawQuery("Select * from user where email=?",new String[]{email});
+        @SuppressLint("Recycle")
+        Cursor cursor = db.rawQuery("select * from user where email=?",
+                new String[]{email});
+
         return cursor.getCount() <= 0;
         /*Equivalent à
         if(cursor.getCount() > 0)
@@ -49,10 +53,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
         */
     }
-    //Vérification de l'email et du mot de passe
-    boolean emailPassword(String email, String password){
+
+    // Vérification de l'email et du mot de passe
+    boolean emailPassword(String email, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from user where email=? and password=?",new String[]{email, password});
+        @SuppressLint("Recycle")
+        Cursor cursor = db.rawQuery("select * from user where email=? and password=?",
+                new String[]{email, password});
+
         return cursor.getCount() > 0;
     }
 }
